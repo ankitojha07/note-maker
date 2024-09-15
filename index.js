@@ -11,6 +11,11 @@ app.get("/", function(req,res){
     res.render("index")
 })
 
+app.get('/profile/:username',function(req,res){
+    const u = req.params.username;
+    res.send(`Hello ${u}`)
+})
+
 app.listen(3000, function(){
     console.log("its running!!");
     
