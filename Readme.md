@@ -22,13 +22,16 @@ The Note-Maker application is a simple, efficient tool designed to help users cr
 2- Navigate to the project directory:
     ```bash
     cd note-maker
+    ```
 
 3- Install dependencies:
     ```bash
     npm install
+    ```
 
 4- Run the application
     ```bash
     node index.js
+    ```
 
-4- Open your browser and visit http://localhost:3000 to use the app.
+5- Open your browser and visit http://localhost:3000 to use the app.
