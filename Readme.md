@@ -20,16 +20,19 @@ The Note-Maker application is a simple, efficient tool designed to help users cr
    git clone https://github.com/your-repo/note-maker.git
 
 2- Navigate to the project directory:
+
     ```bash
     cd note-maker
     ```
 
 3- Install dependencies:
+
     ```bash
     npm install
     ```
 
 4- Run the application
+
     ```bash
     node index.js
     ```
