@@ -42,6 +42,14 @@ app.get("/profile/:username", function (req, res) {
   res.send(`Hello ${u}`);
 });
 
+app.get("/edit", function (req, res) {
+  res.render("edit");
+});
+
+app.get("/edit/:filename", function (req, res) {
+  res.render("edit");
+});
+
 app.listen(3000, function () {
   console.log("its running!!");
 });
