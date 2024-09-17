@@ -42,12 +42,22 @@ app.get("/profile/:username", function (req, res) {
   res.send(`Hello ${u}`);
 });
 
-app.get("/edit", function (req, res) {
-  res.render("edit");
+app.get("/edit/:filename", function (req, res) {
+  fs.readFile(`./files/${req.params.filename}`, "utf-8", function (err) {
+    res.render("editFileName", {
+      filename: req.params.filename,
+    });
+  });
 });
 
-app.get("/edit/:filename", function (req, res) {
-  res.render("edit");
+app.post("/edit", function (req, res) {
+  fs.rename(
+    `./files/${req.body.previousTitle}`,
+    `./files/${req.body.newTitle}`,
+    function (err) {
+      res.redirect("/");
+    }
+  );
 });
 
 app.listen(3000, function () {
