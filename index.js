@@ -21,7 +21,7 @@ app.get("/create", async (req, res) => {
   let createdUser = await userModel.create({
     name: "Ankit Ojha",
     email: "ankitojha9648@gmail.com",
-    username: "ankitojha07",
+    username: "ankitojha_07",
   });
 
   res.send(createdUser);
@@ -39,6 +39,24 @@ app.get("/update", async (req, res) => {
   );
 
   res.send(updatedUser);
+});
+
+app.get("/read", async (req, res) => {
+  let users = await userModel.find();
+
+  res.send(users);
+});
+
+app.get("/delete", async (req, res) => {
+  // let deletedUser = await userModel.findOneAndDelete({
+  //   username: "ankitojha07",
+  // });
+
+  let deletedUsers = await userModel.deleteMany({
+    username: "ankitojha07",
+  });
+
+  res.send(deletedUsers);
 });
 
 // file operations are here
