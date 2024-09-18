@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const fs = require("fs");
+const userModel = require("./usermodel");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -13,6 +14,34 @@ app.get("/", function (req, res) {
     res.render("index", { files: files });
   });
 });
+
+// database operations here
+
+app.get("/create", async (req, res) => {
+  let createdUser = await userModel.create({
+    name: "Ankit Ojha",
+    email: "ankitojha9648@gmail.com",
+    username: "ankitojha07",
+  });
+
+  res.send(createdUser);
+});
+
+app.get("/update", async (req, res) => {
+  let updatedUser = await userModel.findOneAndUpdate(
+    {
+      username: "ankitojha07",
+    },
+    {
+      name: "Samuel",
+      email: "test@leena.ai",
+    }
+  );
+
+  res.send(updatedUser);
+});
+
+// file operations are here
 
 app.get("/files/:filename", function (req, res) {
   fs.readFile(
