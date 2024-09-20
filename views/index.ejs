@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Note Maker</title>
     <link rel="stylesheet" href="/css/styles.css" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
@@ -16,13 +16,21 @@
           action="/create"
           method="POST"
           class="flex flex-col gap-2 items-center p-4"
+          onsubmit="return validateForm()"
         >
-          <input
-            type="text"
-            placeholder="Title goes here"
-            class="block px-5 py-2 bg-zinc-800 w-full rounded-md text-white"
-            name="title"
-          />
+          <div class="titleInput w-full flex flex-col items-start gap-1">
+            <input
+              type="text"
+              placeholder="Title goes here"
+              class="block px-5 py-2 bg-zinc-800 w-full rounded-md text-white"
+              name="title"
+              id="title"
+            />
+            <p class="text-zinc-400 text-[8px] text-start">
+              <span class="text-red-500">** Do not include fileType,</span> it
+              will be text file (.txt) by default
+            </p>
+          </div>
           <textarea
             name="details"
             id="details"
@@ -46,7 +54,10 @@
           <h1 class="font-bold text-xl"><%= val %></h1>
           <div class="w-full flex justify-between items-center mt-4">
             <a href="/files/<%= val%>" class="text-blue-600">Read more.</a>
-            <a href="/edit/<%= val %>" class="text-zinc-600">Edit</a>
+            <div class="text-sm">
+              <a href="/edit/<%= val %>" class="text-red-500">Delete</a>
+              <a href="/edit/<%= val %>" class="text-blue-500">Edit</a>
+            </div>
           </div>
         </div>
         <% }); %> <% } else { %>

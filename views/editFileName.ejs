@@ -14,6 +14,7 @@
         action="/edit"
         method="POST"
         class="flex flex-col gap-2 items-center p-4"
+        onsubmit="return validateEditForm()"
       >
         <input
           type="text"
@@ -28,6 +29,7 @@
           placeholder="New file name"
           class="block px-5 py-2 bg-zinc-800 w-full rounded-md text-white"
           name="newTitle"
+          id="newTitle"
         />
         <input
           type="submit"

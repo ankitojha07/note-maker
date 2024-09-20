@@ -13,3 +13,6 @@ const dataSchema = mongoose.Schema({
   title: String,
   content: String,
 });
+
+const Data = mongoose.model("Data", dataSchema);
+module.exports = Data;
