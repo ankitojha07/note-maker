@@ -101,7 +101,7 @@ app.post("/edit", async function (req, res) {
         try {
           const result = await Data.findOneAndUpdate(
             { title: previousTitle }, // Find by the old title
-            { title: newTitle }, // Update to the new title
+            { title: `${newTitle}.txt` }, // Update to the new title
             { new: true } // Return the updated document
           );
 
@@ -120,6 +120,44 @@ app.post("/edit", async function (req, res) {
   } catch (err) {
     console.error("Error:", err);
     res.status(500).send("Failed to update file.");
+  }
+});
+
+app.get("/delete/:filename", function (req, res) {
+  res.render("delete", {
+    filename: req.params.filename,
+  });
+});
+
+app.post("/delete", async function (req, res) {
+  const titleToDelete = req.body.title; // req.body.title is now accessible
+  const filePath = `./files/${titleToDelete}`;
+
+  try {
+    // First, delete the document from MongoDB
+    const result = await Data.deleteOne({ title: titleToDelete });
+
+    if (result.deletedCount === 0) {
+      return res
+        .status(404)
+        .send("No document found with the specified title.");
+    }
+
+    console.log(`Document with title "${titleToDelete}" deleted from MongoDB.`);
+
+    // Then, delete the file from the file system
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error("Error deleting file from file system:", err);
+        return res.status(500).send("Failed to delete file.");
+      }
+
+      console.log(`File "${filePath}" deleted from file system.`);
+      res.redirect("/"); // Redirect after deletion
+    });
+  } catch (err) {
+    console.error("Error deleting document from MongoDB:", err);
+    res.status(500).send("Failed to delete document.");
   }
 });
 
