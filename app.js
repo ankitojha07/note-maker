@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-const fs = require("fs");
 const Data = require("./models/data");
 require("dotenv").config();
 
@@ -11,19 +10,12 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 
 app.get("/", async function (req, res) {
-  console.log("App is running");
-
   try {
-    // Fetch all documents from MongoDB
-    const documents = await Data.find({}, "title"); // Only select the 'title' field
-
-    // Extract the 'title' fields (file names)
-    const files = documents.map((doc) => doc.title);
-
-    // Render the index page with the file names from MongoDB
-    res.render("index", { files: files });
+    const documents = await Data.find({}, "title");
+    console.log(documents); // Add this to debug the output
+    res.render("index", { files: documents });
   } catch (err) {
-    console.error("Error fetching files from MongoDB:", err);
+    console.error("Error fetching files from MongoDB:", err); // Check the error logs
     res.status(500).send("Failed to retrieve files from MongoDB.");
   }
 });
