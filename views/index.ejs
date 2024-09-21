@@ -9,9 +9,9 @@
   </head>
   <body class="bg-zinc-900 flex w-full justify-center items-center">
     <div
-      class="w-full md:w-/12 min-h-screen bg-zinc-900 flex flex-col p-5 gap-16 items-center"
+      class="w-full md:w-8/12 min-h-screen bg-zinc-900 flex flex-col p-5 gap-16 items-center"
     >
-      <div class="md:w-6/12 w-11/12 border-2 border-zinc-800 rounded-md">
+      <div class="w-full border-2 border-zinc-800 rounded-md">
         <form
           action="/create"
           method="POST"
@@ -49,7 +49,7 @@
       >
         <% if (files.length > 0) { %> <% files.forEach(function(val) { %>
         <div
-          class="task text-white md:w-6/12 w-11/12 border-2 border-zinc-800 rounded-md p-6"
+          class="task text-white w-full border-2 border-zinc-800 rounded-md p-6"
         >
           <h1 class="font-bold text-xl"><%= val.title %></h1>
           <div class="w-full flex justify-between items-center mt-4">
