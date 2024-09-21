@@ -12,8 +12,9 @@ app.set("view engine", "ejs");
 app.get("/", async function (req, res) {
   try {
     const documents = await Data.find({}, "title");
+    const files = documents.map((doc) => doc.title);
     console.log(documents); // Add this to debug the output
-    res.render("index", { files: documents });
+    res.render("index", { files: files });
   } catch (err) {
     console.error("Error fetching files from MongoDB:", err); // Check the error logs
     res.status(500).send("Failed to retrieve files from MongoDB.");
