@@ -12,29 +12,25 @@ app.set("view engine", "ejs");
 app.get("/", async function (req, res) {
   try {
     const documents = await Data.find({}, "title");
-    const files = documents.map((doc) => doc.title);
-    console.log(documents); // Add this to debug the output
-    res.render("index", { files: files });
+    res.render("index", { files: documents });
   } catch (err) {
-    console.error("Error fetching files from MongoDB:", err); // Check the error logs
+    console.error("Error fetching files from MongoDB:", err);
     res.status(500).send("Failed to retrieve files from MongoDB.");
   }
 });
 
-// file operations are here
+// File operations
 app.get("/files/:filename", async function (req, res) {
   try {
-    // Find the document in MongoDB using the title (which includes ".txt")
     const document = await Data.findOne({ title: req.params.filename });
 
     if (!document) {
       return res.status(404).send("File not found in MongoDB.");
     }
 
-    // Render the data from MongoDB
     res.render("show", {
-      filename: document.title, // Use the title from the MongoDB document
-      filedata: document.content, // Use the content from the MongoDB document
+      filename: document.title,
+      filedata: document.content,
     });
   } catch (err) {
     console.error("Error reading data from MongoDB:", err);
@@ -44,14 +40,17 @@ app.get("/files/:filename", async function (req, res) {
 
 app.post("/create", async function (req, res) {
   try {
-    // Create a new instance of the Data model
     let fileName = `${req.body.title.trim()}.txt`;
+    const existingFile = await Data.findOne({ title: fileName });
+    if (existingFile) {
+      return res.status(400).send("File with this title already exists.");
+    }
+
     const newData = new Data({
       title: fileName,
       content: req.body.details,
     });
 
-    // Save the data to MongoDB (returns a promise)
     await newData.save();
     res.redirect("/");
   } catch (err) {
@@ -62,16 +61,14 @@ app.post("/create", async function (req, res) {
 
 app.get("/edit/:filename", async function (req, res) {
   try {
-    // Fetch the file document by its title (filename)
-    const file = await File.findOne({ title: req.params.filename });
+    const file = await Data.findOne({ title: req.params.filename });
 
     if (!file) {
       return res.status(404).send("File not found.");
     }
 
-    // Render the template with the file details (title, content, etc.)
     res.render("editFileName", {
-      file, // Pass the entire file object to the template
+      file,
     });
   } catch (error) {
     console.error("Error fetching file:", error);
@@ -82,33 +79,28 @@ app.get("/edit/:filename", async function (req, res) {
 app.post("/edit", async function (req, res) {
   const previousTitle = req.body.previousTitle.trim();
   const newTitle = req.body.newTitle.trim() + ".txt";
+  const newContent = req.body.content;
 
-  // Validate that the new title is not empty
   if (!newTitle) {
     return res.status(400).send("New file name is required.");
   }
 
-  // Prevent updating if the new title is the same as the old one
-  if (previousTitle === newTitle) {
-    return res
-      .status(400)
-      .send("New title cannot be the same as the current title.");
+  if (previousTitle === newTitle && !newContent) {
+    return res.status(400).send("No changes made.");
   }
 
-  // Update the title in MongoDB
   try {
     const result = await Data.findOneAndUpdate(
-      { title: previousTitle }, // Find by the old title
-      { title: newTitle }, // Update to the new title
-      { new: true } // Return the updated document
+      { title: previousTitle },
+      { title: newTitle, content: newContent },
+      { new: true }
     );
 
     if (!result) {
       return res.status(404).send("Document not found in MongoDB.");
     }
 
-    console.log("Document updated in MongoDB:", result.content);
-    res.redirect("/"); // Redirect after successful update
+    res.redirect("/");
   } catch (dbError) {
     console.error("Error updating MongoDB:", dbError);
     res.status(500).send("Failed to update document in MongoDB.");
@@ -122,10 +114,9 @@ app.get("/delete/:filename", function (req, res) {
 });
 
 app.post("/delete", async function (req, res) {
-  const titleToDelete = req.body.title; // req.body.title is now accessible
+  const titleToDelete = req.body.title;
 
   try {
-    // First, delete the document from MongoDB
     const result = await Data.deleteOne({ title: titleToDelete });
 
     if (result.deletedCount === 0) {
@@ -143,5 +134,5 @@ app.post("/delete", async function (req, res) {
 });
 
 app.listen(process.env.PORT || 8000, function () {
-  console.log("its running!!");
+  console.log("Server is running!");
 });

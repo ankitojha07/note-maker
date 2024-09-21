@@ -47,13 +47,13 @@
       <div
         class="w-full flex md:flex-row flex-col flex-wrap gap-2 justify-center items-center"
       >
-        <% if(files.length > 0) { %> <% files.forEach(function(val){ %>
+        <% if (files.length > 0) { %> <% files.forEach(function(val) { %>
         <div
           class="task text-white md:w-6/12 w-11/12 border-2 border-zinc-800 rounded-md p-6"
         >
           <h1 class="font-bold text-xl"><%= val.title %></h1>
           <div class="w-full flex justify-between items-center mt-4">
-            <a href="/files/<%= val.title%>" class="text-blue-600"
+            <a href="/files/<%= val.title %>" class="text-blue-600"
               >Read more.</a
             >
             <div class="text-sm flex gap-2">
