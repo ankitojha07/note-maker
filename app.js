@@ -60,25 +60,46 @@ app.post("/create", async function (req, res) {
   }
 });
 
-app.get("/edit/:filename", function (req, res) {
-  res.render("editFileName", {
-    filename: req.params.filename,
-  });
+app.get("/edit/:filename", async function (req, res) {
+  try {
+    // Fetch the file document by its title (filename)
+    const file = await File.findOne({ title: req.params.filename });
+
+    if (!file) {
+      return res.status(404).send("File not found.");
+    }
+
+    // Render the template with the file details (title, content, etc.)
+    res.render("editFileName", {
+      file, // Pass the entire file object to the template
+    });
+  } catch (error) {
+    console.error("Error fetching file:", error);
+    res.status(500).send("Server error while fetching file.");
+  }
 });
 
 app.post("/edit", async function (req, res) {
   const previousTitle = req.body.previousTitle.trim();
-  const newTitle = `${req.body.newTitle.trim()}`;
+  const newTitle = req.body.newTitle.trim() + ".txt";
 
   // Validate that the new title is not empty
   if (!newTitle) {
     return res.status(400).send("New file name is required.");
   }
+
+  // Prevent updating if the new title is the same as the old one
+  if (previousTitle === newTitle) {
+    return res
+      .status(400)
+      .send("New title cannot be the same as the current title.");
+  }
+
   // Update the title in MongoDB
   try {
     const result = await Data.findOneAndUpdate(
       { title: previousTitle }, // Find by the old title
-      { title: `${newTitle}.txt` }, // Update to the new title
+      { title: newTitle }, // Update to the new title
       { new: true } // Return the updated document
     );
 
