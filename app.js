@@ -15,7 +15,7 @@ app.get("/", async function (req, res) {
     res.render("index", { files: documents });
   } catch (err) {
     console.error("Error fetching files from MongoDB:", err);
-    res.status(500).send("Failed to retrieve files from MongoDB.");
+    res.status(500).send("Failed to retrieve files from database.");
   }
 });
 
@@ -25,7 +25,7 @@ app.get("/files/:filename", async function (req, res) {
     const document = await Data.findOne({ title: req.params.filename });
 
     if (!document) {
-      return res.status(404).send("File not found in MongoDB.");
+      return res.status(404).send("File not found in database.");
     }
 
     res.render("show", {
@@ -34,7 +34,7 @@ app.get("/files/:filename", async function (req, res) {
     });
   } catch (err) {
     console.error("Error reading data from MongoDB:", err);
-    res.status(500).send("Failed to retrieve file from MongoDB.");
+    res.status(500).send("Failed to retrieve file from database.");
   }
 });
 
@@ -97,13 +97,13 @@ app.post("/edit", async function (req, res) {
     );
 
     if (!result) {
-      return res.status(404).send("Document not found in MongoDB.");
+      return res.status(404).send("Document not found in database.");
     }
 
     res.redirect("/");
   } catch (dbError) {
     console.error("Error updating MongoDB:", dbError);
-    res.status(500).send("Failed to update document in MongoDB.");
+    res.status(500).send("Failed to update document in database.");
   }
 });
 
@@ -125,10 +125,12 @@ app.post("/delete", async function (req, res) {
         .send("No document found with the specified title.");
     }
 
-    console.log(`Document with title "${titleToDelete}" deleted from MongoDB.`);
+    console.log(
+      `Document with title "${titleToDelete}" deleted from database.`
+    );
     res.redirect("/");
   } catch (err) {
-    console.error("Error deleting document from MongoDB:", err);
+    console.error("Error deleting document from database:", err);
     res.status(500).send("Failed to delete document.");
   }
 });
